@@ -1,5 +1,6 @@
 from src.Controller import Controller
 from src.Repository import Repository
+from src.View import View
 
 temperature_filename = "../data/temperature.dat"
 humidity_filename = "../data/humidity.dat"
@@ -12,6 +13,6 @@ if __name__ == '__main__':
     controller = Controller(Repository(temperature_filename), Repository(humidity_filename), Repository(time_filename),
                             table_filename)
 
-    result = controller.run()
+    view = View(controller)
 
-    print(result)
+    view.run()

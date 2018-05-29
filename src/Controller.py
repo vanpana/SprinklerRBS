@@ -78,8 +78,7 @@ class Controller:
             h_pos = get_cls_pos_from_name("humidity", h_cls[0])
             for t_cls in temperature_classes:
                 t_pos = get_cls_pos_from_name("temperature", t_cls[0])
-                self.filled_table[h_pos][t_pos] \
-                    = min(t_cls[1], h_cls[1])
+                self.filled_table[h_pos][t_pos] = min(t_cls[1], h_cls[1])
 
     def get_max_values(self):
         short = []
@@ -104,13 +103,13 @@ class Controller:
 
         for cls in self.time_repository.data:
             for line in self.time_repository.data[cls]:
-                if cls == "short" and s > 0:
+                if cls == "short" and s > 0 and small == (0, 0):
                     intersection = line.x_of_a_point(s)
                     small = (intersection, s)
-                elif cls == "medium" and m > 0:
+                elif cls == "medium" and m > 0 and medium == (0, 0):
                     intersection = line.x_of_a_point(m)
                     medium = (intersection, m)
-                elif cls == "long" and l > 0:
+                elif cls == "long" and l > 0 and long == (0, 0):
                     intersection = line.x_of_a_point(l)
                     long = (intersection, l)
 
