@@ -97,20 +97,33 @@ class Controller:
         return max(short), max(medium), max(long)
 
     def get_time(self, s, m, l):
-        small = (0, 0)
-        medium = (0, 0)
-        long = (0, 0)
+        small = []
+        medium = []
+        long = []
 
         for cls in self.time_repository.data:
             for line in self.time_repository.data[cls]:
-                if cls == "short" and s > 0 and small == (0, 0):
+                if cls == "short" and s > 0:
                     intersection = line.x_of_a_point(s)
-                    small = (intersection, s)
-                elif cls == "medium" and m > 0 and medium == (0, 0):
+                    small.append((intersection, s))
+                elif cls == "medium" and m > 0:
                     intersection = line.x_of_a_point(m)
-                    medium = (intersection, m)
-                elif cls == "long" and l > 0 and long == (0, 0):
+                    medium.append((intersection, m))
+                elif cls == "long" and l > 0:
                     intersection = line.x_of_a_point(l)
-                    long = (intersection, l)
+                    long.append((intersection, l))
 
-        return (small[0] * small[1] + medium[0] * medium[1] + long[0] * long[1]) / (small[1] + medium[1] + long[1])
+        small_sum = 0
+        medium_sum = 0
+        long_sum = 0
+
+        if len(small) > 0:
+            small_sum = sum([s[0] * s[1] for s in small]) / sum([s[1] for s in small])
+
+        if len(medium) > 0:
+            medium_sum = sum([m[0] * m[1] for m in medium]) / sum([m[1] for m in medium])
+
+        if len(long) > 0:
+            long_sum = sum([l[0] * l[1] for l in long]) / sum([l[1] for l in long])
+
+        return small_sum + medium_sum + long_sum

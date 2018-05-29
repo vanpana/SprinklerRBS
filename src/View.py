@@ -3,5 +3,4 @@ class View:
         self.controller = controller
 
     def run(self):
-        while True:
-            print(self.controller.run())
+        print(self.controller.run())
