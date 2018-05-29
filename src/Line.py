@@ -1,27 +1,38 @@
+import math
+
+import numpy
+
+
 class Line:
-    def __init__(self, start_x, start_y, end_x, end_y):
+    def __init__(self, start_x, end_x, start_y, end_y):
         self.start_x = start_x
         self.start_y = start_y
         self.end_x = end_x
         self.end_y = end_y
 
     def y_of_a_point(self, x):
-        intersection = self.function(x)
-        if intersection < 0 or intersection > 1:
+        if x > self.end_x or x < self.start_x:
             return None
-        return intersection
+
+        if self.start_y < self.end_y:
+            return (x - self.start_x) / (self.end_x - self.start_x)
+        else:
+            return 1 - (x - self.start_x) / (self.end_x - self.start_x)
 
     def x_of_a_point(self, y):
-        intersection = self.reverse(y)
-        if intersection < 0:
-            return None
-        return intersection
+        if self.start_y < self.end_y:
+            return y * (self.end_x - self.start_x) + self.start_x
+        else:
+            return 1 - y * (self.end_x - self.start_x) + self.start_x
 
     def slope(self):
-        return (self.end_y - self.start_y) / (self.end_x - self.start_x)
+        slope = (self.end_y - self.start_y) / (self.end_x - self.start_x)
+        alpha = numpy.arctan(slope) / (math.pi / 2)
+        return alpha
 
     def function(self, x):
-        return self.slope() * x + self.end_y
+        f = self.slope() * x + self.end_y
+        return f
 
     def reverse(self, y):
         return (y - self.start_y) / self.slope()

@@ -8,7 +8,7 @@ def get_cls_from_x(repo, x):
     for cls in repo.data:
         for line in repo.data[cls]:
             intersection = line.y_of_a_point(x)
-            if intersection is not None and cls not in classes:
+            if intersection is not None and cls not in [c[0] for c in classes]:
                 classes.append((cls, intersection))
 
     return classes
@@ -48,8 +48,8 @@ class Controller:
         self.humidity_repository = humidity_repository
         self.time_repository = time_repository
         self.table = _get_table(table_filename)
-        self.filled_table = [[0 for _ in range(len(self.humidity_repository.data))]
-                             for _ in range(len(self.temperature_repository.data))]
+        self.filled_table = [[0 for _ in range(len(self.temperature_repository.data))]
+                             for _ in range(len(self.humidity_repository.data))]
 
     def run(self):
         # Read temperature from user
@@ -74,11 +74,12 @@ class Controller:
         return self.get_time(s, m, l)
 
     def fill_table(self, temperature_classes, humidity_classes):
-        for t_cls in temperature_classes:
-            t_pos = get_cls_pos_from_name("temperature", t_cls[0])
-            for h_cls in humidity_classes:
-                h_pos = get_cls_pos_from_name("humidity", h_cls[0])
-                self.filled_table[t_pos][h_pos] = min(t_cls[1], h_cls[0])
+        for h_cls in humidity_classes:
+            h_pos = get_cls_pos_from_name("humidity", h_cls[0])
+            for t_cls in temperature_classes:
+                t_pos = get_cls_pos_from_name("temperature", t_cls[0])
+                self.filled_table[h_pos][t_pos] \
+                    = min(t_cls[1], h_cls[1])
 
     def get_max_values(self):
         short = []
@@ -101,15 +102,15 @@ class Controller:
         medium = (0, 0)
         long = (0, 0)
 
-        for cls in self.time_repository:
-            for line in cls:
-                if cls == "small":
+        for cls in self.time_repository.data:
+            for line in self.time_repository.data[cls]:
+                if cls == "short" and s > 0:
                     intersection = line.x_of_a_point(s)
                     small = (intersection, s)
-                elif cls == "medium":
+                elif cls == "medium" and m > 0:
                     intersection = line.x_of_a_point(m)
                     medium = (intersection, m)
-                else:
+                elif cls == "long" and l > 0:
                     intersection = line.x_of_a_point(l)
                     long = (intersection, l)
 
